@@ -3,6 +3,7 @@
 #include "fileprocess.h"
 #include <list>
 #include "ShowProcessDlg.h"
+#include "ToolTipListCtrl.h"
 
 // CEmptyFileView form view
 
@@ -40,7 +41,7 @@ public:
 	
 	afx_msg void OnBnClickedBtnDeleteSelect();
 private:
-	CListCtrl m_empty_files_list;
+	CToolTipListCtrl m_empty_files_list;
 
 	CString Yes, No;
 
@@ -58,6 +59,8 @@ private:
 	void AdjustListColumnWidth();
 	void DestoryAll();
 	BOOL TEmptyFolderEnumerateFunc(CString& FolderPath, bool IsSystem, bool IsReadOnly); 
+public:
+	afx_msg void OnNMDblclkListEmptyFiles(NMHDR *pNMHDR, LRESULT *pResult);
 };
 
 

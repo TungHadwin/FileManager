@@ -18,6 +18,8 @@ CEmptyFileView::CEmptyFileView()
 {
 	Yes = theApp.LoadString(IDS_Yes);
 	No = theApp.LoadString(IDS_No);
+
+	m_empty_files_list.SetToolTipInfo(1, theApp.LoadString(IDS_ListCtrl_ToolTip_DesString));
 }
 
 CEmptyFileView::~CEmptyFileView()
@@ -41,6 +43,7 @@ BEGIN_MESSAGE_MAP(CEmptyFileView, CFormView)
 	ON_BN_CLICKED(IDC_CHECK_SYSTEM, &CEmptyFileView::OnBnClickedCheckSystem)
 	ON_BN_CLICKED(IDC_CHECK_READONLY, &CEmptyFileView::OnBnClickedCheckReadonly)
 	ON_BN_CLICKED(IDC_BTN_DELETE_SELECT, &CEmptyFileView::OnBnClickedBtnDeleteSelect)
+	ON_NOTIFY(NM_DBLCLK, IDC_LIST_EMPTY_FILES, &CEmptyFileView::OnNMDblclkListEmptyFiles)
 END_MESSAGE_MAP()
 
 
@@ -177,7 +180,7 @@ void CEmptyFileView::AdjustListColumnWidth()
 		m_empty_files_list.GetWindowRect(rect);
 		ScreenToClient(rect);
 		m_empty_files_list.SetColumnWidth(0,rect.Width()/3);
-		m_empty_files_list.SetColumnWidth(1,rect.Width()*2/3-4-164);
+		m_empty_files_list.SetColumnWidth(1,rect.Width()*2/3-4-168);
 		m_empty_files_list.SetColumnWidth(2,80);
 		m_empty_files_list.SetColumnWidth(3,80);
 	}
@@ -297,4 +300,19 @@ void CEmptyFileView::OnBnClickedBtnDeleteSelect()
 			::RemoveDirectory(path);
 		}
 	}
+}
+
+
+void CEmptyFileView::OnNMDblclkListEmptyFiles(NMHDR *pNMHDR, LRESULT *pResult)
+{
+	LPNMITEMACTIVATE pNMItemActivate = reinterpret_cast<LPNMITEMACTIVATE>(pNMHDR);
+	
+	NM_LISTVIEW* pNMListView = (NM_LISTVIEW*)pNMHDR;
+	int row = pNMListView->iItem;
+	int col = pNMListView->iSubItem;
+
+	CString path = m_empty_files_list.GetItemText(row,1);
+	OpenDirectory(this->m_hWnd, path);
+
+	*pResult = 0;
 }

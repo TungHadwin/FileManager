@@ -1,5 +1,32 @@
 #include "stdafx.h"
+#include "FileManager.h"
 #include "fileprocess.h"
+
+bool OpenDirectory(HWND owner, CString& path)
+{
+	std::string shell;
+	shell="/e,"+path;
+	//打开指定目录  "/e,C:\\Windows"
+	if(ShellExecute(owner, _T("open"), _T("explorer.exe"), shell.c_str(), NULL, SW_SHOWNORMAL)<=(HINSTANCE)32)
+	{
+		AfxMessageBox(theApp.LoadString(IDS_OpenDirectoryFailed)); //打开指定目录失败！
+		return false;
+	}
+	return true;
+}
+
+bool OpenDirectorySelectFile(HWND owner, CString& pathname)
+{ 
+    std::string shell;
+	shell="/select,"+pathname;
+	//打开指定目录并选择指定文件  "/select,C:\\Windows\\desktop.ini"
+	if(ShellExecute(owner, _T("open"), _T("explorer.exe"), shell.c_str(), NULL, SW_SHOWNORMAL)<=(HINSTANCE)32)
+	{
+		AfxMessageBox(theApp.LoadString(IDS_OpenDirectoryFailed)); //打开指定目录失败！
+		return false;
+	}
+	return true;
+}
 
 CString ShowFolderBrowse(HWND owner)    
 {

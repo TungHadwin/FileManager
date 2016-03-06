@@ -84,6 +84,9 @@
     <ClInclude Include="ShowProcessDlg.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="ToolTipListCtrl.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FileManager.cpp">
@@ -112,6 +115,9 @@
     </ClCompile>
     <ClCompile Include="ShowProcessDlg.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ToolTipListCtrl.cpp">
+      <Filter>Header Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

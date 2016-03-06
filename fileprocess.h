@@ -1,6 +1,9 @@
 #pragma once
 #include <list>
 
+bool OpenDirectory(HWND owner, CString& path);
+bool OpenDirectorySelectFile(HWND owner, CString& pathname);
+
 CString ShowFolderBrowse(HWND owner=NULL);
 
 
