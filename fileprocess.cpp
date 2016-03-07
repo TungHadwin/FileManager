@@ -249,7 +249,7 @@ void ExportFilesToFile(CString& path,
 							std::list<EmptyFileInfo*>& empty_file_list, ExportFilesToFileFunc pFunc, void* pUserData)
 {
 	std::fstream file(path, std::fstream::out);
-	file<<FolderName<<','<<FullPath<<','<<FileSize<<','<<FileExt<<','<<CreateTime<<','<<AccessTime<<','<<AccessTime<<','<<WriteTime<<','<<ReadOnly<<"\n";
+	file<<FolderName<<','<<FullPath<<','<<FileSize<<','<<FileExt<<','<<CreateTime<<','<<AccessTime<<','<<WriteTime<<','<<SystemFile<<','<<ReadOnly<<"\n";
 
 	for (auto list_Iter = empty_file_list.begin(); list_Iter != empty_file_list.end(); ++list_Iter) 
 	{
