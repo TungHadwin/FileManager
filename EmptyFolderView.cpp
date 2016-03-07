@@ -4,6 +4,8 @@
 #include "stdafx.h"
 #include "FileManager.h"
 #include "EmptyFolderView.h"
+#include "DeleteReadOnlyNoticeDlg.h"
+
 // CEmptyFolderView
 
 IMPLEMENT_DYNCREATE(CEmptyFolderView, CFormView)
@@ -318,13 +320,55 @@ void CEmptyFolderView::OnBnClickedCheckReadonly()
 
 void CEmptyFolderView::OnBnClickedBtnDeleteSelect()
 {
-	for(int i=0; i<m_empty_files_list.GetItemCount();)
+	/*for(int i=0; i<m_empty_files_list.GetItemCount();)
 	{
 		if(m_empty_files_list.GetCheck(i))
 		{
 			CString path = m_empty_files_list.GetItemText(i,1);
 			::RemoveDirectory(path);
 			m_empty_files_list.DeleteItem(i);
+		}
+		else
+			i++;
+	}*/
+	unsigned char delete_readonly = 0;
+	for(int i=0; i<m_empty_files_list.GetItemCount();)
+	{
+		if(m_empty_files_list.GetCheck(i))
+		{
+			CString path = m_empty_files_list.GetItemText(i,1);
+
+			BOOL Res = ::RemoveDirectory(path);
+
+			//只读文件
+			if(!Res&&((GetFileAttributes(path)&FILE_ATTRIBUTE_READONLY)==FILE_ATTRIBUTE_READONLY))
+			{
+				bool operation=false;
+				if(delete_readonly==0)//0 提示对话框
+				{
+					CDeleteReadOnlyNoticeDlg dlg;
+
+					dlg.m_notice_text.Format("\"%s\"%s", path, theApp.LoadString(IDS_DeleteReadOnlyFileNotice0));
+					if(dlg.DoModal()==IDOK)
+					{
+						operation=true;
+						if(dlg.m_same_operation)
+							delete_readonly=1;
+					}
+				}
+				else if(delete_readonly==1)//1执行相同操作
+					operation=true;
+
+				if(operation)
+				{
+					SetFileAttributes(path,0);//0一般，1 只读，2 隐藏，4系统
+					Res = ::RemoveDirectory(path);
+				}
+			}
+			if(Res)
+				m_empty_files_list.DeleteItem(i);
+			else
+				i++;
 		}
 		else
 			i++;
