@@ -3,13 +3,13 @@
 
 #include "stdafx.h"
 #include "FileManager.h"
-#include "EmptyFileView.h"
-// CEmptyFileView
+#include "EmptyFolderView.h"
+// CEmptyFolderView
 
-IMPLEMENT_DYNCREATE(CEmptyFileView, CFormView)
+IMPLEMENT_DYNCREATE(CEmptyFolderView, CFormView)
 
-CEmptyFileView::CEmptyFileView()
-	: CFormView(CEmptyFileView::IDD)
+CEmptyFolderView::CEmptyFolderView()
+	: CFormView(CEmptyFolderView::IDD)
 	, folderpath("")
 	, m_check_all(FALSE)
 	, m_check_system(FALSE)
@@ -21,12 +21,12 @@ CEmptyFileView::CEmptyFileView()
 	m_empty_files_list.SetToolTipInfo(1, theApp.LoadString(IDS_ListCtrl_ToolTip_DesString));
 }
 
-CEmptyFileView::~CEmptyFileView()
+CEmptyFolderView::~CEmptyFolderView()
 {
 	DestoryAll();
 }
 
-void CEmptyFileView::DoDataExchange(CDataExchange* pDX)
+void CEmptyFolderView::DoDataExchange(CDataExchange* pDX)
 {
 	CFormView::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_LIST_EMPTY_FILES, m_empty_files_list);
@@ -35,29 +35,29 @@ void CEmptyFileView::DoDataExchange(CDataExchange* pDX)
 	DDX_Check(pDX, IDC_CHECK_READONLY, m_check_readonly);
 }
 
-BEGIN_MESSAGE_MAP(CEmptyFileView, CFormView)
+BEGIN_MESSAGE_MAP(CEmptyFolderView, CFormView)
 	ON_WM_SIZE()
-	ON_BN_CLICKED(IDC_BTN_SELECT_FOLDER, &CEmptyFileView::OnBnClickedBtnSelectFolder)
-	ON_BN_CLICKED(IDC_CHECK_ALL, &CEmptyFileView::OnBnClickedCheckAll)
-	ON_BN_CLICKED(IDC_CHECK_SYSTEM, &CEmptyFileView::OnBnClickedCheckSystem)
-	ON_BN_CLICKED(IDC_CHECK_READONLY, &CEmptyFileView::OnBnClickedCheckReadonly)
-	ON_BN_CLICKED(IDC_BTN_DELETE_SELECT, &CEmptyFileView::OnBnClickedBtnDeleteSelect)
-	ON_NOTIFY(NM_DBLCLK, IDC_LIST_EMPTY_FILES, &CEmptyFileView::OnNMDblclkListEmptyFiles)
-	ON_COMMAND(ID_EXPORT_TO_FILE, &CEmptyFileView::OnExportToFile)
-	ON_NOTIFY(NM_RCLICK, IDC_LIST_EMPTY_FILES, &CEmptyFileView::OnNMRClickListEmptyFiles)
+	ON_BN_CLICKED(IDC_BTN_SELECT_FOLDER, &CEmptyFolderView::OnBnClickedBtnSelectFolder)
+	ON_BN_CLICKED(IDC_CHECK_ALL, &CEmptyFolderView::OnBnClickedCheckAll)
+	ON_BN_CLICKED(IDC_CHECK_SYSTEM, &CEmptyFolderView::OnBnClickedCheckSystem)
+	ON_BN_CLICKED(IDC_CHECK_READONLY, &CEmptyFolderView::OnBnClickedCheckReadonly)
+	ON_BN_CLICKED(IDC_BTN_DELETE_SELECT, &CEmptyFolderView::OnBnClickedBtnDeleteSelect)
+	ON_NOTIFY(NM_DBLCLK, IDC_LIST_EMPTY_FILES, &CEmptyFolderView::OnNMDblclkListEmptyFiles)
+	ON_COMMAND(ID_EXPORT_TO_FILE, &CEmptyFolderView::OnExportToFile)
+	ON_NOTIFY(NM_RCLICK, IDC_LIST_EMPTY_FILES, &CEmptyFolderView::OnNMRClickListEmptyFiles)
 END_MESSAGE_MAP()
 
 
-// CEmptyFileView diagnostics
+// CEmptyFolderView diagnostics
 
 #ifdef _DEBUG
-void CEmptyFileView::AssertValid() const
+void CEmptyFolderView::AssertValid() const
 {
 	CFormView::AssertValid();
 }
 
 #ifndef _WIN32_WCE
-void CEmptyFileView::Dump(CDumpContext& dc) const
+void CEmptyFolderView::Dump(CDumpContext& dc) const
 {
 	CFormView::Dump(dc);
 }
@@ -65,44 +65,39 @@ void CEmptyFileView::Dump(CDumpContext& dc) const
 #endif //_DEBUG
 
 
-// CEmptyFileView message handlers
+// CEmptyFolderView message handlers
 
 
-void CEmptyFileView::OnInitialUpdate()
+void CEmptyFolderView::OnInitialUpdate()
 {
 	CFormView::OnInitialUpdate();
 
 	m_show_dlg.Create(CShowProcessDlg::IDD,this); //创建一个非模态对话框);
 
 	m_empty_files_list.SetExtendedStyle(LVS_EX_FULLROWSELECT | LVS_EX_GRIDLINES | LVS_SHOWSELALWAYS| LVS_EX_CHECKBOXES);
-	m_empty_files_list.InsertColumn(0, theApp.LoadString(IDS_FileName), LVCFMT_LEFT, 128);         //插入列
+	m_empty_files_list.InsertColumn(0, theApp.LoadString(IDS_FolderName), LVCFMT_LEFT, 128);         //插入列
 	m_empty_files_list.InsertColumn(1, theApp.LoadString(IDS_FullPath), LVCFMT_LEFT, 138); 
-	m_empty_files_list.InsertColumn(2, theApp.LoadString(IDS_FileSize), LVCFMT_LEFT, 80); 
-	m_empty_files_list.InsertColumn(3, theApp.LoadString(IDS_FileExt), LVCFMT_LEFT, 80); 
-	m_empty_files_list.InsertColumn(4, theApp.LoadString(IDS_CreateTime), LVCFMT_LEFT, 80); 
-	m_empty_files_list.InsertColumn(5, theApp.LoadString(IDS_AccessTime), LVCFMT_LEFT, 80); 
-	m_empty_files_list.InsertColumn(6, theApp.LoadString(IDS_WriteTime), LVCFMT_LEFT, 80); 
-	m_empty_files_list.InsertColumn(7, theApp.LoadString(IDS_SystemFile), LVCFMT_LEFT, 80); 
-	m_empty_files_list.InsertColumn(8, theApp.LoadString(IDS_ReadOnly), LVCFMT_LEFT, 80); 
+	m_empty_files_list.InsertColumn(2, theApp.LoadString(IDS_SystemFile), LVCFMT_LEFT, 80); 
+	m_empty_files_list.InsertColumn(3, theApp.LoadString(IDS_ReadOnly), LVCFMT_LEFT, 80); 
 
 	AdjustListColumnWidth();
 }
 
 
-void CEmptyFileView::OnActivateView(BOOL bActivate, CView* pActivateView, CView* pDeactiveView)
+void CEmptyFolderView::OnActivateView(BOOL bActivate, CView* pActivateView, CView* pDeactiveView)
 {
 	// TODO: Add your specialized code here and/or call the base class
 	if(bActivate)
 	{
 		CDocument* pDoc = GetDocument();
-		pDoc->SetTitle(theApp.LoadString(IDS_EmptyFileManager));
+		pDoc->SetTitle(theApp.LoadString(IDS_EmptyFolderManager));
 	}
 
 	CFormView::OnActivateView(bActivate, pActivateView, pDeactiveView);
 }
 
 
-void CEmptyFileView::OnSize(UINT nType, int cx, int cy)
+void CEmptyFolderView::OnSize(UINT nType, int cx, int cy)
 {
 	CFormView::OnSize(nType, cx, cy);
 
@@ -178,40 +173,35 @@ void CEmptyFileView::OnSize(UINT nType, int cx, int cy)
 	AdjustListColumnWidth();
 }
 
-void CEmptyFileView::AdjustListColumnWidth()
+void CEmptyFolderView::AdjustListColumnWidth()
 {
 	if(m_empty_files_list.GetSafeHwnd())
 	{
 		CRect rect;
 		m_empty_files_list.GetWindowRect(rect);
 		ScreenToClient(rect);
-		m_empty_files_list.SetColumnWidth(0,(rect.Width()-60*2-120*3-80*2)/3);
-		m_empty_files_list.SetColumnWidth(1,(rect.Width()-60*2-120*3-80*2)*2/3-4-8);
-		m_empty_files_list.SetColumnWidth(2,60);//size
-		m_empty_files_list.SetColumnWidth(3,60);//ext
-		m_empty_files_list.SetColumnWidth(4,120);
-		m_empty_files_list.SetColumnWidth(5,120);
-		m_empty_files_list.SetColumnWidth(6,120);
-		m_empty_files_list.SetColumnWidth(7,80);
-		m_empty_files_list.SetColumnWidth(8,80);
+		m_empty_files_list.SetColumnWidth(0,rect.Width()/3);
+		m_empty_files_list.SetColumnWidth(1,rect.Width()*2/3-4-168);
+		m_empty_files_list.SetColumnWidth(2,80);
+		m_empty_files_list.SetColumnWidth(3,80);
 	}
 }
 
-BOOL WINAPI CEmptyFileView::EmptyFileEnumerateFunc (CString& FolderPath, unsigned int FileSize, CTime& CreateTime, CTime& AccessTime, CTime& WriteTime, bool IsSystem, bool IsReadOnly, void* pUserData)
+BOOL WINAPI CEmptyFolderView::EmptyFolderEnumerateFunc (CString& FolderPath, bool IsSystem, bool IsReadOnly, void* pUserData)
 {
-	return ((CEmptyFileView*)pUserData)->TEmptyFileEnumerateFunc(FolderPath, FileSize, CreateTime, AccessTime, WriteTime, IsSystem, IsReadOnly);
+	return ((CEmptyFolderView*)pUserData)->TEmptyFolderEnumerateFunc(FolderPath, IsSystem, IsReadOnly);
 }
 
-BOOL CEmptyFileView::TEmptyFileEnumerateFunc(CString& FolderPath, unsigned int FileSize, CTime& CreateTime, CTime& AccessTime, CTime& WriteTime, bool IsSystem, bool IsReadOnly)
+BOOL CEmptyFolderView::TEmptyFolderEnumerateFunc(CString& FolderPath, bool IsSystem, bool IsReadOnly)
 {
-	EmptyFileInfo* info = new EmptyFileInfo(FolderPath, FileSize, CreateTime, AccessTime, WriteTime, IsSystem, IsReadOnly);
+	EmptyFolderInfo* info = new EmptyFolderInfo(FolderPath, IsSystem, IsReadOnly);
 	m_empty_file_list.push_back(info);
 
 	m_show_dlg.SetDispText(FolderPath);
 	return true;
 }
 
-void CEmptyFileView::OnBnClickedBtnSelectFolder()
+void CEmptyFolderView::OnBnClickedBtnSelectFolder()
 {
 	folderpath = ShowFolderBrowse(m_hWnd);
 	if(!folderpath.IsEmpty())
@@ -221,7 +211,7 @@ void CEmptyFileView::OnBnClickedBtnSelectFolder()
 
 		DestoryAll();
 		//doEmptyFolderEnumeration(folderpath, m_empty_file_list);
-		doEmptyFileEnumeration(folderpath, EmptyFileEnumerateFunc, this);
+		doEmptyFolderEnumeration(folderpath, EmptyFolderEnumerateFunc, this);
 
 		m_show_dlg.ShowWindow(SW_HIDE); //显示非模态对话框
 
@@ -229,7 +219,7 @@ void CEmptyFileView::OnBnClickedBtnSelectFolder()
 	}
 }
 
-void CEmptyFileView::ListFolders()
+void CEmptyFolderView::ListFolders()
 {
 	m_empty_files_list.DeleteAllItems();
 
@@ -243,30 +233,55 @@ void CEmptyFileView::ListFolders()
 		}
 
 		(*list_Iter)->IsDisplay = true;
-
-		CString str;
-		int pos = (*list_Iter)->FilePath.ReverseFind('\\');
-		m_empty_files_list.InsertItem(empty_files_add_index, (*list_Iter)->FilePath.Right((*list_Iter)->FilePath.GetLength()-pos-1));      
-		m_empty_files_list.SetItemText(empty_files_add_index, 1, (*list_Iter)->FilePath);
-
-		str.Format("%dB",(*list_Iter)->FileSize);
-		m_empty_files_list.SetItemText(empty_files_add_index, 2, str); //size
-
-		pos = (*list_Iter)->FilePath.ReverseFind('.');
-		m_empty_files_list.SetItemText(empty_files_add_index, 3, (*list_Iter)->FilePath.Right((*list_Iter)->FilePath.GetLength()-pos-1)); //ext
-
-		m_empty_files_list.SetItemText(empty_files_add_index, 4, CTime2String((*list_Iter)->CreateTime)); //CreateTime
-		m_empty_files_list.SetItemText(empty_files_add_index, 5, CTime2String((*list_Iter)->AccessTime)); //AccessTime
-		m_empty_files_list.SetItemText(empty_files_add_index, 6, CTime2String((*list_Iter)->WriteTime)); //WriteTime
-
-		m_empty_files_list.SetItemText(empty_files_add_index, 7, (*list_Iter)->IsSystem? Yes:No);
-		m_empty_files_list.SetItemText(empty_files_add_index, 8, (*list_Iter)->IsReadOnly? Yes:No);
+		int pos = (*list_Iter)->FolderPath.ReverseFind('\\');
+		m_empty_files_list.InsertItem(empty_files_add_index, (*list_Iter)->FolderPath.Right((*list_Iter)->FolderPath.GetLength()-pos-1));      
+		m_empty_files_list.SetItemText(empty_files_add_index, 1, (*list_Iter)->FolderPath);
+		m_empty_files_list.SetItemText(empty_files_add_index, 2, (*list_Iter)->IsSystem? Yes:No);
+		m_empty_files_list.SetItemText(empty_files_add_index, 3, (*list_Iter)->IsReadOnly? Yes:No);
 		m_empty_files_list.SetItemData(empty_files_add_index, (DWORD)empty_files_add_index);    // 一般就设置一个唯一的值.不唯一排序可能有点乱,
 		empty_files_add_index++;
 	}
+
+
+	/*//先处理非系统
+	for (auto list_Iter = m_empty_file_list.begin(); list_Iter != m_empty_file_list.end(); ++list_Iter) 
+	{
+		if( ((*list_Iter)->IsSystem) || ((*list_Iter)->IsReadOnly&&(!m_check_readonly)) )
+		{
+			(*list_Iter)->IsDisplay = false;
+			continue;
+		}
+
+		(*list_Iter)->IsDisplay = true;
+		int pos = (*list_Iter)->FolderPath.ReverseFind('\\');
+		m_empty_files_list.InsertItem(empty_files_add_index, (*list_Iter)->FolderPath.Right((*list_Iter)->FolderPath.GetLength()-pos-1));      
+		m_empty_files_list.SetItemText(empty_files_add_index, 1, (*list_Iter)->FolderPath);
+		m_empty_files_list.SetItemText(empty_files_add_index, 2, (*list_Iter)->IsSystem? Yes:No);
+		m_empty_files_list.SetItemText(empty_files_add_index, 3, (*list_Iter)->IsReadOnly? Yes:No);
+		m_empty_files_list.SetItemData(empty_files_add_index, (DWORD)empty_files_add_index);    // 一般就设置一个唯一的值.不唯一排序可能有点乱,
+		empty_files_add_index++;
+	}
+	//处理系统
+	for (auto list_Iter = m_empty_file_list.begin(); list_Iter != m_empty_file_list.end(); ++list_Iter) 
+	{
+		if((*list_Iter)->IsSystem&&(m_check_system))
+		{
+			if((*list_Iter)->IsReadOnly&&(!m_check_readonly))
+				continue;
+
+			(*list_Iter)->IsDisplay = true;
+			int pos = (*list_Iter)->FolderPath.ReverseFind('\\');
+			m_empty_files_list.InsertItem(empty_files_add_index, (*list_Iter)->FolderPath.Right((*list_Iter)->FolderPath.GetLength()-pos-1));      
+			m_empty_files_list.SetItemText(empty_files_add_index, 1, (*list_Iter)->FolderPath);
+			m_empty_files_list.SetItemText(empty_files_add_index, 2, (*list_Iter)->IsSystem? Yes:No);
+			m_empty_files_list.SetItemText(empty_files_add_index, 3, (*list_Iter)->IsReadOnly? Yes:No);
+			m_empty_files_list.SetItemData(empty_files_add_index, (DWORD)empty_files_add_index);    // 一般就设置一个唯一的值.不唯一排序可能有点乱,
+			empty_files_add_index++;
+		}
+	}*/
 }
 
-void CEmptyFileView::DestoryAll()
+void CEmptyFolderView::DestoryAll()
 {
 	for (auto list_Iter = m_empty_file_list.begin(); list_Iter != m_empty_file_list.end(); ++list_Iter) 
 	{
@@ -278,7 +293,7 @@ void CEmptyFileView::DestoryAll()
 }
 
 
-void CEmptyFileView::OnBnClickedCheckAll()
+void CEmptyFolderView::OnBnClickedCheckAll()
 {
 	UpdateData(TRUE);
 	//ListFolders();
@@ -287,28 +302,28 @@ void CEmptyFileView::OnBnClickedCheckAll()
 }
 
 
-void CEmptyFileView::OnBnClickedCheckSystem()
+void CEmptyFolderView::OnBnClickedCheckSystem()
 {
 	UpdateData(TRUE);
 	ListFolders();
 }
 
 
-void CEmptyFileView::OnBnClickedCheckReadonly()
+void CEmptyFolderView::OnBnClickedCheckReadonly()
 {
 	UpdateData(TRUE);
 	ListFolders();
 }
 
 
-void CEmptyFileView::OnBnClickedBtnDeleteSelect()
+void CEmptyFolderView::OnBnClickedBtnDeleteSelect()
 {
 	for(int i=0; i<m_empty_files_list.GetItemCount();)
 	{
 		if(m_empty_files_list.GetCheck(i))
 		{
 			CString path = m_empty_files_list.GetItemText(i,1);
-			::DeleteFile(path);
+			::RemoveDirectory(path);
 			m_empty_files_list.DeleteItem(i);
 		}
 		else
@@ -317,7 +332,7 @@ void CEmptyFileView::OnBnClickedBtnDeleteSelect()
 }
 
 
-void CEmptyFileView::OnNMDblclkListEmptyFiles(NMHDR *pNMHDR, LRESULT *pResult)
+void CEmptyFolderView::OnNMDblclkListEmptyFiles(NMHDR *pNMHDR, LRESULT *pResult)
 {
 	LPNMITEMACTIVATE pNMItemActivate = reinterpret_cast<LPNMITEMACTIVATE>(pNMHDR);
 	
@@ -326,13 +341,13 @@ void CEmptyFileView::OnNMDblclkListEmptyFiles(NMHDR *pNMHDR, LRESULT *pResult)
 	int col = pNMListView->iSubItem;
 
 	CString path = m_empty_files_list.GetItemText(row,1);
-	OpenDirectorySelectFile(this->m_hWnd, path);
+	OpenDirectory(this->m_hWnd, path);
 
 	*pResult = 0;
 }
 
 //----------------------------------------------------------------------------------------------
-void CEmptyFileView::OnNMRClickListEmptyFiles(NMHDR *pNMHDR, LRESULT *pResult)
+void CEmptyFolderView::OnNMRClickListEmptyFiles(NMHDR *pNMHDR, LRESULT *pResult)
 {
 	LPNMITEMACTIVATE pNMItemActivate = reinterpret_cast<LPNMITEMACTIVATE>(pNMHDR);
 	
@@ -346,18 +361,18 @@ void CEmptyFileView::OnNMRClickListEmptyFiles(NMHDR *pNMHDR, LRESULT *pResult)
 }
 
 
-BOOL WINAPI CEmptyFileView::ExportFoldersToFileFunc(CString& FolderPath, void* pUserData)
+BOOL WINAPI CEmptyFolderView::ExportFoldersToFileFunc(CString& FolderPath, void* pUserData)
 {
-	return ((CEmptyFileView*)pUserData)->TExportFoldersToFileFunc(FolderPath);
+	return ((CEmptyFolderView*)pUserData)->TExportFoldersToFileFunc(FolderPath);
 }
 
-BOOL CEmptyFileView::TExportFoldersToFileFunc (CString& FolderPath)
+BOOL CEmptyFolderView::TExportFoldersToFileFunc (CString& FolderPath)
 {
 	m_show_dlg.SetDispText(FolderPath);
 	return true;
 }
 
-void CEmptyFileView::OnExportToFile()
+void CEmptyFolderView::OnExportToFile()
 {
 	CFileDialog dlg(FALSE, "", "", NULL, "Excel Files (*.csv)|*.csv|", this);
 	if(dlg.DoModal()==IDOK)
@@ -366,9 +381,7 @@ void CEmptyFileView::OnExportToFile()
 
 		m_show_dlg.ShowWindow(SW_SHOWNORMAL); //显示非模态对话框
 
-		ExportFilesToFile(pathname, 
-							theApp.LoadString(IDS_FolderName),  theApp.LoadString(IDS_FullPath), theApp.LoadString(IDS_FileSize), theApp.LoadString(IDS_FileExt), 
-								theApp.LoadString(IDS_CreateTime), theApp.LoadString(IDS_AccessTime), theApp.LoadString(IDS_WriteTime), theApp.LoadString(IDS_SystemFile), theApp.LoadString(IDS_ReadOnly), Yes, No,
+		ExportFoldersToFile(pathname, theApp.LoadString(IDS_FolderName),  theApp.LoadString(IDS_FullPath), theApp.LoadString(IDS_SystemFile), theApp.LoadString(IDS_ReadOnly), Yes, No,
 							m_empty_file_list, ExportFoldersToFileFunc, this);
 
 		m_show_dlg.ShowWindow(SW_HIDE); //显示非模态对话框

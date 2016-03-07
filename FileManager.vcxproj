@@ -189,6 +189,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="EmptyFileView.h" />
+    <ClInclude Include="EmptyFolderView.h" />
     <ClInclude Include="FileManager.h" />
     <ClInclude Include="FileManagerDoc.h" />
     <ClInclude Include="fileprocess.h" />
@@ -204,6 +205,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="EmptyFileView.cpp" />
+    <ClCompile Include="EmptyFolderView.cpp" />
     <ClCompile Include="FileManager.cpp" />
     <ClCompile Include="FileManagerDoc.cpp" />
     <ClCompile Include="fileprocess.cpp">

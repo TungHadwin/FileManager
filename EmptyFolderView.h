@@ -5,21 +5,21 @@
 #include "ShowProcessDlg.h"
 #include "ToolTipListCtrl.h"
 
-// CEmptyFileView form view
+// CEmptyFolderView form view
 
-class CEmptyFileView : public CFormView
+class CEmptyFolderView : public CFormView
 {
-	DECLARE_DYNCREATE(CEmptyFileView)
+	DECLARE_DYNCREATE(CEmptyFolderView)
 
 public:
-	CEmptyFileView();           // protected constructor used by dynamic creation
-	virtual ~CEmptyFileView();
+	CEmptyFolderView();           // protected constructor used by dynamic creation
+	virtual ~CEmptyFolderView();
 
-	static BOOL WINAPI EmptyFileEnumerateFunc (CString& FolderPath, unsigned int FileSize, CTime& CreateTime, CTime& AccessTime, CTime& WriteTime, bool IsSystem, bool IsReadOnly, void* pUserData); 
+	static BOOL WINAPI EmptyFolderEnumerateFunc (CString& FolderPath, bool IsSystem, bool IsReadOnly, void* pUserData); 
 	static BOOL WINAPI ExportFoldersToFileFunc (CString& FolderPath, void* pUserData); 
 
 public:
-	enum { IDD = IDD_EMPTYFILEVIEW };
+	enum { IDD = IDD_EMPTYFOLDERVIEW };
 #ifdef _DEBUG
 	virtual void AssertValid() const;
 #ifndef _WIN32_WCE
@@ -46,7 +46,7 @@ private:
 
 	CString Yes, No;
 
-	std::list<EmptyFileInfo*> m_empty_file_list;
+	std::list<EmptyFolderInfo*> m_empty_file_list;
 
 	CString folderpath;
 
@@ -59,7 +59,7 @@ private:
 	void ListFolders();
 	void AdjustListColumnWidth();
 	void DestoryAll();
-	BOOL TEmptyFileEnumerateFunc(CString& FolderPath, unsigned int FileSize, CTime& CreateTime, CTime& AccessTime, CTime& WriteTime, bool IsSystem, bool IsReadOnly);
+	BOOL TEmptyFolderEnumerateFunc(CString& FolderPath, bool IsSystem, bool IsReadOnly);
 	BOOL TExportFoldersToFileFunc (CString& FolderPath); 
 public:
 	afx_msg void OnNMDblclkListEmptyFiles(NMHDR *pNMHDR, LRESULT *pResult);

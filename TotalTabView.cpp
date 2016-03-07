@@ -6,6 +6,7 @@
 #include "TotalTabView.h"
 
 #include "EmptyFileView.h"
+#include "EmptyFolderView.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -68,10 +69,8 @@ int CTotalTabView::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	CMFCTabCtrl* m_sbqwndTabs = AddTabCtrl(EMPTY_FILE_INDEX);
 	if(m_sbqwndTabs!=NULL)
 	{
-		
-		AddView(m_sbqwndTabs, RUNTIME_CLASS(CEmptyFileView), theApp.LoadString(IDS_EmptyFileManger), 0);
-		//AddView(m_sbqwndTabs, RUNTIME_CLASS(CSpectrumDispView), SPECTRUM_DISPLAY_NAME[theApp.language], 1);
-		//AddView(m_sbqwndTabs, RUNTIME_CLASS(CLisaruDispView), SBQ_LISSAJOUS_DISPLAY_NAME[theApp.language], 2);
+		AddView(m_sbqwndTabs, RUNTIME_CLASS(CEmptyFileView), theApp.LoadString(IDS_EmptyFileManager), 0);
+		AddView(m_sbqwndTabs, RUNTIME_CLASS(CEmptyFolderView), theApp.LoadString(IDS_EmptyFolderManager), 1);
 	}
 	return 0;
 }

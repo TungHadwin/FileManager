@@ -207,3 +207,74 @@ void ExportFoldersToFile(CString& path, CString& FolderName, CString& FullPath, 
 		}
 	}
 }
+
+int doEmptyFileEnumeration(CString lpPath, EmptyFileEnumerateFunc pFunc, void* pUserData)  
+{  
+	lpPath+="\\*.*";
+
+    CFileFind  findfile;
+	BOOL m_flag = findfile.FindFile(lpPath);
+    while(m_flag) 
+    {  
+		m_flag = findfile.FindNextFile(); 
+		if(findfile.IsDirectory())   //如果是目录跳过
+		{
+			if((!findfile.IsDots()))
+			{
+				CString filename = findfile.GetFilePath();
+				doEmptyFileEnumeration(filename, pFunc, pUserData);
+			}
+			continue;
+		}
+		else
+		{
+			if(findfile.GetLength()==0)
+			{
+				CTime CreateTime;
+				CTime AccessTime;
+				CTime WriteTime;
+				findfile.GetCreationTime(CreateTime);
+				findfile.GetLastAccessTime(AccessTime);
+				findfile.GetLastWriteTime(WriteTime);
+				pFunc(findfile.GetFilePath(), 0, CreateTime, AccessTime, WriteTime, findfile.IsSystem(), findfile.IsReadOnly(), pUserData);
+			}
+		}
+	}
+	return 0;
+}  
+
+void ExportFilesToFile(CString& path,
+							CString& FolderName, CString& FullPath, CString& FileSize, CString& FileExt, CString& CreateTime, CString& AccessTime, CString& WriteTime,
+								CString& SystemFile, CString& ReadOnly, CString& Yes, CString& No,
+							std::list<EmptyFileInfo*>& empty_file_list, ExportFilesToFileFunc pFunc, void* pUserData)
+{
+	std::fstream file(path, std::fstream::out);
+	file<<FolderName<<','<<FullPath<<','<<FileSize<<','<<FileExt<<','<<CreateTime<<','<<AccessTime<<','<<AccessTime<<','<<WriteTime<<','<<ReadOnly<<"\n";
+
+	for (auto list_Iter = empty_file_list.begin(); list_Iter != empty_file_list.end(); ++list_Iter) 
+	{
+		if((*list_Iter)->IsDisplay)
+		{
+			int pos = (*list_Iter)->FilePath.ReverseFind('\\');
+			int pos_ext = (*list_Iter)->FilePath.ReverseFind('.');
+			file<<(*list_Iter)->FilePath.Right((*list_Iter)->FilePath.GetLength()-pos-1)<<','\
+				<<(*list_Iter)->FilePath<<','\
+				<<(*list_Iter)->FileSize<<"B,"\
+				<<(*list_Iter)->FilePath.Right((*list_Iter)->FilePath.GetLength()-pos_ext-1)<<','\
+				<<CTime2String((*list_Iter)->CreateTime)<<','\
+				<<CTime2String((*list_Iter)->AccessTime)<<','\
+				<<CTime2String((*list_Iter)->WriteTime)<<','\
+				<<((*list_Iter)->IsSystem? Yes:No)<<','\
+				<<((*list_Iter)->IsReadOnly? Yes:No)<<"\n";
+
+			pFunc((*list_Iter)->FilePath, pUserData);
+		}
+	}
+}
+
+CString CTime2String(CTime time)
+{
+	CString str;
+	str.Format("%04d/%02d/%02d %02d:%02d:%02d",time.GetYear(), time.GetMonth(), time.GetDay(), time.GetHour(), time.GetMinute(), time.GetSecond());
+	return str;
+}
