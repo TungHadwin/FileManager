@@ -157,3 +157,20 @@ BOOL CToolTipListCtrl::PreTranslateMessage(MSG* pMsg)
 	}
     return CMFCListCtrl::PreTranslateMessage(pMsg);  
 }  
+
+//重载的排序比较函数：用于比较两个项的大小关系
+int CToolTipListCtrl::OnCompareItems(LPARAM lParam1, LPARAM lParam2, int iColumn) 
+{
+    // 取出两个比较项内容
+    CString strItem1,strItem2;
+    LVFINDINFO lvfi;
+    lvfi.flags=LVFI_PARAM;
+    lvfi.lParam=lParam1;
+    strItem1 = GetItemText(FindItem(&lvfi,-1),iColumn);
+    lvfi.lParam=lParam2;
+    strItem2 = GetItemText(FindItem(&lvfi,-1),iColumn); 
+
+	//比较字符串
+    int iSort = _tcsicmp(strItem1, strItem2);
+	return(iSort);
+}

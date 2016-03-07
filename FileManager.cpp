@@ -191,11 +191,11 @@ void CFileManagerApp::OnAppAbout()
 
 void CFileManagerApp::PreLoadState()
 {
-	//BOOL bNameValid;
-	//CString strName;
-	//bNameValid = strName.LoadString(IDS_EDIT_MENU);
-	//ASSERT(bNameValid);
-	//GetContextMenuManager()->AddMenu(strName, IDR_POPUP_EDIT);
+	BOOL bNameValid;
+	CString strName;
+	bNameValid = strName.LoadString(IDS_MENU_EXPORT);
+	ASSERT(bNameValid);
+	GetContextMenuManager()->AddMenu(strName, IDR_MENU_EXPORT);
 }
 
 void CFileManagerApp::LoadCustomState()

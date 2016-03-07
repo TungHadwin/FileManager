@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "FileManager.h"
 #include "fileprocess.h"
+#include <fstream>
 
 bool OpenDirectory(HWND owner, CString& path)
 {
@@ -184,4 +185,25 @@ int doEmptyFolderEnumeration(CString lpPath, std::list<EmptyFolderInfo*>& m_empt
 			filenum++;
 	}
 	return filenum;
+}
+
+void ExportFoldersToFile(CString& path, CString& FolderName, CString& FullPath, CString& SystemFile, CString& ReadOnly, CString& Yes, CString& No,
+							std::list<EmptyFolderInfo*>& empty_file_list, ExportFoldersToFileFunc pFunc, void* pUserData)
+{
+	std::fstream file(path, std::fstream::out);
+	file<<FolderName<<','<<FullPath<<','<<SystemFile<<','<<ReadOnly<<"\n";
+
+	for (auto list_Iter = empty_file_list.begin(); list_Iter != empty_file_list.end(); ++list_Iter) 
+	{
+		if((*list_Iter)->IsDisplay)
+		{
+			int pos = (*list_Iter)->FolderPath.ReverseFind('\\');
+			file<<(*list_Iter)->FolderPath.Right((*list_Iter)->FolderPath.GetLength()-pos-1)<<','\
+				<<(*list_Iter)->FolderPath<<','\
+				<<((*list_Iter)->IsSystem? Yes:No)<<','\
+				<<((*list_Iter)->IsReadOnly? Yes:No)<<"\n";
+
+			pFunc((*list_Iter)->FolderPath, pUserData);
+		}
+	}
 }

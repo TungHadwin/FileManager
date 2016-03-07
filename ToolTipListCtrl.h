@@ -25,6 +25,8 @@ public:
 	afx_msg BOOL CreateToolTip(CString sItemName,const CString &sDesc, const CRect& ItemRc);
 
 	virtual BOOL PreTranslateMessage(MSG* pMsg); 
+
+	virtual int OnCompareItems(LPARAM lParam1, LPARAM lParam2, int iColumn);
 protected:
 	DECLARE_MESSAGE_MAP()
 	virtual void PreSubclassWindow();

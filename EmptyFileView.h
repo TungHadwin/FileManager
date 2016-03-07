@@ -16,6 +16,7 @@ public:
 	virtual ~CEmptyFileView();
 
 	static BOOL WINAPI EmptyFolderEnumerateFunc (CString& FolderPath, bool IsSystem, bool IsReadOnly, void* pUserData); 
+	static BOOL WINAPI ExportFoldersToFileFunc (CString& FolderPath, void* pUserData); 
 
 public:
 	enum { IDD = IDD_EMPTYFILEVIEW };
@@ -58,9 +59,12 @@ private:
 	void ListFolders();
 	void AdjustListColumnWidth();
 	void DestoryAll();
-	BOOL TEmptyFolderEnumerateFunc(CString& FolderPath, bool IsSystem, bool IsReadOnly); 
+	BOOL TEmptyFolderEnumerateFunc(CString& FolderPath, bool IsSystem, bool IsReadOnly);
+	BOOL TExportFoldersToFileFunc (CString& FolderPath); 
 public:
 	afx_msg void OnNMDblclkListEmptyFiles(NMHDR *pNMHDR, LRESULT *pResult);
+	afx_msg void OnExportToFile();
+	afx_msg void OnNMRClickListEmptyFiles(NMHDR *pNMHDR, LRESULT *pResult);
 };
 
 
