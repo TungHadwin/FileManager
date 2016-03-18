@@ -78,13 +78,13 @@ void CEmptyFileView::OnInitialUpdate()
 	m_empty_files_list.SetExtendedStyle(LVS_EX_FULLROWSELECT | LVS_EX_GRIDLINES | LVS_SHOWSELALWAYS| LVS_EX_CHECKBOXES);
 	m_empty_files_list.InsertColumn(0, theApp.LoadString(IDS_FileName), LVCFMT_LEFT, 128);         //插入列
 	m_empty_files_list.InsertColumn(1, theApp.LoadString(IDS_FullPath), LVCFMT_LEFT, 138); 
-	m_empty_files_list.InsertColumn(2, theApp.LoadString(IDS_FileSize), LVCFMT_LEFT, 80); 
-	m_empty_files_list.InsertColumn(3, theApp.LoadString(IDS_FileExt), LVCFMT_LEFT, 80); 
-	m_empty_files_list.InsertColumn(4, theApp.LoadString(IDS_CreateTime), LVCFMT_LEFT, 80); 
-	m_empty_files_list.InsertColumn(5, theApp.LoadString(IDS_AccessTime), LVCFMT_LEFT, 80); 
-	m_empty_files_list.InsertColumn(6, theApp.LoadString(IDS_WriteTime), LVCFMT_LEFT, 80); 
-	m_empty_files_list.InsertColumn(7, theApp.LoadString(IDS_SystemFile), LVCFMT_LEFT, 80); 
-	m_empty_files_list.InsertColumn(8, theApp.LoadString(IDS_ReadOnly), LVCFMT_LEFT, 80); 
+	m_empty_files_list.InsertColumn(2, theApp.LoadString(IDS_FileSize), LVCFMT_RIGHT, 80); 
+	m_empty_files_list.InsertColumn(3, theApp.LoadString(IDS_FileExt), LVCFMT_RIGHT, 80); 
+	m_empty_files_list.InsertColumn(4, theApp.LoadString(IDS_CreateTime), LVCFMT_RIGHT, 80); 
+	m_empty_files_list.InsertColumn(5, theApp.LoadString(IDS_AccessTime), LVCFMT_RIGHT, 80); 
+	m_empty_files_list.InsertColumn(6, theApp.LoadString(IDS_WriteTime), LVCFMT_RIGHT, 80); 
+	m_empty_files_list.InsertColumn(7, theApp.LoadString(IDS_SystemFile), LVCFMT_RIGHT, 80); 
+	m_empty_files_list.InsertColumn(8, theApp.LoadString(IDS_ReadOnly), LVCFMT_RIGHT, 80); 
 
 	AdjustListColumnWidth();
 }
@@ -357,9 +357,11 @@ void CEmptyFileView::OnNMDblclkListEmptyFiles(NMHDR *pNMHDR, LRESULT *pResult)
 	int row = pNMListView->iItem;
 	int col = pNMListView->iSubItem;
 
-	CString path = m_empty_files_list.GetItemText(row,1);
-	OpenDirectorySelectFile(this->m_hWnd, path);
-
+	if(row!=-1)
+	{
+		CString path = m_empty_files_list.GetItemText(row,1);
+		OpenDirectorySelectFile(this->m_hWnd, path);
+	}
 	*pResult = 0;
 }
 
@@ -399,7 +401,7 @@ void CEmptyFileView::OnExportToFile()
 		m_show_dlg.ShowWindow(SW_SHOWNORMAL); //显示非模态对话框
 
 		ExportFilesToFile(pathname, 
-							theApp.LoadString(IDS_FolderName),  theApp.LoadString(IDS_FullPath), theApp.LoadString(IDS_FileSize), theApp.LoadString(IDS_FileExt), 
+							theApp.LoadString(IDS_FileName),  theApp.LoadString(IDS_FullPath), theApp.LoadString(IDS_FileSize), theApp.LoadString(IDS_FileExt), 
 								theApp.LoadString(IDS_CreateTime), theApp.LoadString(IDS_AccessTime), theApp.LoadString(IDS_WriteTime), theApp.LoadString(IDS_SystemFile), theApp.LoadString(IDS_ReadOnly), Yes, No,
 							m_empty_file_list, ExportFoldersToFileFunc, this);
 

@@ -272,9 +272,119 @@ void ExportFilesToFile(CString& path,
 	}
 }
 
+//-------------------------------------------------------------------------------------------------------------------------------------------
+int doTempFileEnumeration(CString lpPath, CString& ext, std::list<EmptyFileInfo*>& file_list, TempFileEnumerateFunc pFunc, void* pUserData)  
+{  
+	lpPath+="\\*.*";
+
+    CFileFind  findfile;
+	BOOL m_flag = findfile.FindFile(lpPath);
+    while(m_flag) 
+    {  
+		m_flag = findfile.FindNextFile(); 
+		if(findfile.IsDirectory())   //如果是目录跳过
+		{
+			if((!findfile.IsDots()))
+			{
+				CString filename = findfile.GetFilePath();
+				doTempFileEnumeration(filename, ext, file_list, pFunc, pUserData);
+			}
+			continue;
+		}
+		else
+		{
+			CString filename = findfile.GetFileName();
+			int pos = filename.ReverseFind('.');
+			filename = filename.Right(filename.GetLength()-pos-1);
+
+			if(filename==ext)
+			{
+				CTime CreateTime;
+				CTime AccessTime;
+				CTime WriteTime;
+				findfile.GetCreationTime(CreateTime);
+				findfile.GetLastAccessTime(AccessTime);
+				findfile.GetLastWriteTime(WriteTime);
+
+				EmptyFileInfo* info = new EmptyFileInfo(findfile.GetFilePath(), findfile.GetLength(), CreateTime, AccessTime, WriteTime, findfile.IsSystem(), findfile.IsReadOnly());
+				file_list.push_back(info);
+
+				pFunc(findfile.GetFilePath(), pUserData);
+			}
+		}
+	}
+	return 0;
+} 
+
+int doTempFileEnumeration(std::list<TempCleanerInfo*>& cleaner_list, TempFileEnumerateFunc pFunc, void* pUserData)  
+{
+	for (auto list_Iter = cleaner_list.begin(); list_Iter != cleaner_list.end(); ++list_Iter)
+	{
+		if((*list_Iter)->m_check)
+			doTempFileEnumeration((*list_Iter)->m_folder_path, (*list_Iter)->m_ext, (*list_Iter)->m_file_list, pFunc, pUserData);
+	}
+	return 0;
+}
+
+void ExportTempCleanerToFile(CString& path, 
+								CString& FolderName, CString& FullPath, CString& FileSize, CString& CreateTime, CString& AccessTime, CString& WriteTime,
+								CString& SystemFile, CString& ReadOnly, CString& Yes, CString& No,
+									std::list<TempCleanerInfo*>& cleaner_list, ExportTempCleanerToFileFunc pFunc, void* pUserData)
+{
+	std::fstream file(path, std::fstream::out);
+	file<<FolderName<<','<<FullPath<<','<<FileSize<<','<<CreateTime<<','<<AccessTime<<','<<WriteTime<<','<<SystemFile<<','<<ReadOnly<<"\n";
+
+	for (auto cleaner_list_Iter = cleaner_list.begin(); cleaner_list_Iter != cleaner_list.end(); ++cleaner_list_Iter) 
+	{
+		for (auto list_Iter = (*cleaner_list_Iter)->m_file_list.begin(); list_Iter != (*cleaner_list_Iter)->m_file_list.end(); ++list_Iter) 
+		{
+			if((*list_Iter)->IsDisplay)
+			{
+				int pos = (*list_Iter)->FilePath.ReverseFind('\\');
+				file<<(*list_Iter)->FilePath.Right((*list_Iter)->FilePath.GetLength()-pos-1)<<','\
+					<<(*list_Iter)->FilePath<<','\
+					<<FileSize2String((*list_Iter)->FileSize)<<','\
+					<<CTime2String((*list_Iter)->CreateTime)<<','\
+					<<CTime2String((*list_Iter)->AccessTime)<<','\
+					<<CTime2String((*list_Iter)->WriteTime)<<','\
+					<<((*list_Iter)->IsSystem? Yes:No)<<','\
+					<<((*list_Iter)->IsReadOnly? Yes:No)<<"\n";
+
+				pFunc((*list_Iter)->FilePath, pUserData);
+			}
+		}
+	}
+}
+
+
 CString CTime2String(CTime time)
 {
 	CString str;
 	str.Format("%04d/%02d/%02d %02d:%02d:%02d",time.GetYear(), time.GetMonth(), time.GetDay(), time.GetHour(), time.GetMinute(), time.GetSecond());
 	return str;
+}
+
+CString FileSize2String(unsigned int FileSize)
+{
+	CString str;
+	if(FileSize>=1024*1024)
+		str.Format("%0.2fMB",FileSize/1024.0/1024.0);
+	else if(FileSize>=1024)
+		str.Format("%0.2fKB",FileSize/1024.0);
+	else
+		str.Format("%dB",FileSize);
+	return str;
+}
+
+unsigned int String2FileSize(CString str)
+{
+	char *pbuf=str.GetBuffer();
+	double num=atof(pbuf);
+	str.ReleaseBuffer();
+
+	if((pbuf[str.GetLength()-2]=='K'))
+		num*=1000;
+	else if((pbuf[str.GetLength()-2]=='M'))
+		num*=1000000;
+	return num;
 }

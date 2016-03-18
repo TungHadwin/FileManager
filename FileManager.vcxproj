@@ -177,12 +177,15 @@
   <ItemGroup>
     <None Include="ReadMe.txt" />
     <None Include="res\bmp00001.bmp" />
+    <None Include="res\bmp00002.bmp" />
     <None Include="res\FileManager.ico" />
     <None Include="res\FileManager.rc2" />
     <None Include="res\FileManagerDoc.ico" />
+    <None Include="res\folders.bmp" />
     <None Include="res\idr_file.ico" />
     <None Include="res\idr_main.ico" />
     <None Include="res\mainfram.bmp" />
+    <None Include="res\subitems.bmp" />
     <None Include="res\Toolbar.bmp" />
     <None Include="res\Toolbar256.bmp" />
     <None Include="UserImages.bmp" />
@@ -194,12 +197,17 @@
     <ClInclude Include="FileManager.h" />
     <ClInclude Include="FileManagerDoc.h" />
     <ClInclude Include="fileprocess.h" />
+    <ClInclude Include="ListEditCtrl.h" />
     <ClInclude Include="MainFrm.h" />
     <ClInclude Include="MultTabView.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="ShowProcessDlg.h" />
     <ClInclude Include="stdafx.h" />
+    <ClInclude Include="SuperGridCtrl.h" />
     <ClInclude Include="targetver.h" />
+    <ClInclude Include="TempCleanerGrid.h" />
+    <ClInclude Include="TempCleanerSettingDlg.h" />
+    <ClInclude Include="TempCleanerView.h" />
     <ClInclude Include="ToolTipListCtrl.h" />
     <ClInclude Include="TotalTabView.h" />
     <ClInclude Include="type.h" />
@@ -213,6 +221,7 @@
     <ClCompile Include="fileprocess.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Use</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="ListEditCtrl.cpp" />
     <ClCompile Include="MainFrm.cpp" />
     <ClCompile Include="MultTabView.cpp" />
     <ClCompile Include="ShowProcessDlg.cpp" />
@@ -222,6 +231,10 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_ENU|Win32'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="SuperGridCtrl.cpp" />
+    <ClCompile Include="TempCleanerGrid.cpp" />
+    <ClCompile Include="TempCleanerSettingDlg.cpp" />
+    <ClCompile Include="TempCleanerView.cpp" />
     <ClCompile Include="ToolTipListCtrl.cpp" />
     <ClCompile Include="TotalTabView.cpp" />
   </ItemGroup>

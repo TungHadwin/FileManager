@@ -1,6 +1,7 @@
 #pragma once
 #include <list>
 #include <time.h>
+#include <fstream>
 
 bool OpenDirectory(HWND owner, CString& path);
 bool OpenDirectorySelectFile(HWND owner, CString& pathname);
@@ -95,5 +96,56 @@ void ExportFilesToFile(CString& path,
 							std::list<EmptyFileInfo*>& empty_file_list, ExportFilesToFileFunc pFunc, void* pUserData);
 
 
+//----------------------------------------------------------------------TempCleaner---------------------------------------------------------------------
+class TempCleanerInfo
+{
+public:
+	TempCleanerInfo(void)
+		: m_folder_path("")
+		, m_ext("")
+		, m_check(true)
+	{
+	};
+
+	TempCleanerInfo(CString& Path, CString& ext, bool check)
+		: m_folder_path(Path)
+		, m_ext(ext)
+		, m_check(check)
+	{
+	};
+
+	~TempCleanerInfo(void)
+	{
+		DestoryAll();
+	};
+
+	void DestoryAll()
+	{
+		for (auto list_Iter = m_file_list.begin(); list_Iter != m_file_list.end(); ++list_Iter) 
+		{
+				delete (*list_Iter);
+				(*list_Iter) = NULL;
+		}
+		m_file_list.erase(m_file_list.begin(), m_file_list.end());
+		m_file_list.clear();
+	}
+
+	std::list<EmptyFileInfo*> m_file_list;
+	CString m_folder_path;
+	CString m_ext;
+	bool m_check;
+};
+
+typedef BOOL (WINAPI *TempFileEnumerateFunc) (CString& FolderPath, void* pUserData); 
+int doTempFileEnumeration(std::list<TempCleanerInfo*>& cleaner_list, TempFileEnumerateFunc pFunc, void* pUserData);
+
+typedef BOOL (WINAPI *ExportTempCleanerToFileFunc) (CString& FolderPath, void* pUserData); 
+void ExportTempCleanerToFile(CString& path, 
+								CString& FolderName, CString& FullPath, CString& FileSize, CString& CreateTime, CString& AccessTime, CString& WriteTime,
+								CString& SystemFile, CString& ReadOnly, CString& Yes, CString& No,
+							std::list<TempCleanerInfo*>& cleaner_list, ExportTempCleanerToFileFunc pFunc, void* pUserData);
+
 
 CString CTime2String(CTime time);
+CString FileSize2String(unsigned int FileSize);
+unsigned int String2FileSize(CString str);

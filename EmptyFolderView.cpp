@@ -384,9 +384,11 @@ void CEmptyFolderView::OnNMDblclkListEmptyFiles(NMHDR *pNMHDR, LRESULT *pResult)
 	int row = pNMListView->iItem;
 	int col = pNMListView->iSubItem;
 
-	CString path = m_empty_files_list.GetItemText(row,1);
-	OpenDirectory(this->m_hWnd, path);
-
+	if(row!=-1)
+	{
+		CString path = m_empty_files_list.GetItemText(row,1);
+		OpenDirectory(this->m_hWnd, path);
+	}
 	*pResult = 0;
 }
 
@@ -425,7 +427,7 @@ void CEmptyFolderView::OnExportToFile()
 
 		m_show_dlg.ShowWindow(SW_SHOWNORMAL); //显示非模态对话框
 
-		ExportFoldersToFile(pathname, theApp.LoadString(IDS_FolderName),  theApp.LoadString(IDS_FullPath), theApp.LoadString(IDS_SystemFile), theApp.LoadString(IDS_ReadOnly), Yes, No,
+		ExportFoldersToFile(pathname, theApp.LoadString(IDS_FileName),  theApp.LoadString(IDS_FullPath), theApp.LoadString(IDS_SystemFile), theApp.LoadString(IDS_ReadOnly), Yes, No,
 							m_empty_file_list, ExportFoldersToFileFunc, this);
 
 		m_show_dlg.ShowWindow(SW_HIDE); //显示非模态对话框

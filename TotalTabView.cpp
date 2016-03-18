@@ -7,6 +7,7 @@
 
 #include "EmptyFileView.h"
 #include "EmptyFolderView.h"
+#include "TempCleanerView.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -71,6 +72,7 @@ int CTotalTabView::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	{
 		AddView(m_sbqwndTabs, RUNTIME_CLASS(CEmptyFileView), theApp.LoadString(IDS_EmptyFileManager), 0);
 		AddView(m_sbqwndTabs, RUNTIME_CLASS(CEmptyFolderView), theApp.LoadString(IDS_EmptyFolderManager), 1);
+		AddView(m_sbqwndTabs, RUNTIME_CLASS(CTempCleanerView), theApp.LoadString(IDS_TempCleaner), 2);
 	}
 	return 0;
 }

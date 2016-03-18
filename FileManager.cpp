@@ -96,6 +96,7 @@ BOOL CFileManagerApp::InitInstance()
 	SetRegistryKey(LoadString(IDS_RegistryKey));
 	LoadStdProfileSettings(4);  // 加载标准 INI 文件选项(包括 MRU)
 
+	InitShellManager();
 
 	InitContextMenuManager();
 
